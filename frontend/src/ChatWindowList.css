@@ -1,0 +1,158 @@
+/* ChatWindowList.css */
+
+/* ChatWindowList Container */
+.chat-window-list {
+    width: 250px;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    overflow-y: auto;
+    height: 100vh;
+    padding: 10px;
+    box-sizing: border-box;
+    border-right: 1px solid #2a2a2a;
+}
+
+/* Create Chat Section */
+.create-chat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.new-chat-input {
+    flex: 1;
+    padding: 8px;
+    margin-right: 5px;
+    border-radius: 5px;
+    border: none;
+    background-color: #2a2a2a;
+    color: #ffffff;
+}
+
+.create-chat-button {
+    padding: 8px 12px;
+    background-color: #e50914;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.create-chat-button:disabled {
+    background-color: #7c7c7c;
+    cursor: not-allowed;
+}
+
+.create-chat-button:hover:enabled {
+    background-color: #d40812;
+}
+
+/* Chat Window Item */
+.chat-window-item {
+    position: relative;
+    padding: 10px;
+    margin-bottom: 8px;
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    z-index: 1; /* Ensure stacking context */
+}
+
+/* When menu is open, bring chat-window-item to front */
+.chat-window-item.menu-open {
+    z-index: 100;
+}
+
+.chat-window-item.active {
+    background-color: #e50914;
+    font-weight: bold;
+}
+
+.chat-window-item:hover {
+    background-color: #d40812;
+    transform: translateX(5px);
+}
+
+/* Chat Window Content */
+.chat-window-content {
+    display: flex;
+    align-items: center;
+}
+
+/* Loading and Error Styles */
+.loading-message {
+    text-align: center;
+    font-size: 0.9em;
+    color: #888;
+}
+
+.error-message {
+    color: #ff4f4f;
+    font-size: 0.9em;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 10px;
+    top: 35px;
+    background-color: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    padding: 5px;
+    z-index: 200; /* Higher z-index to appear above other elements */
+    white-space: nowrap;
+    border-radius: 5px;
+}
+
+.dropdown-menu.visible {
+    display: block;
+}
+
+/* Dropdown Items */
+.dropdown-item {
+    cursor: pointer;
+    padding: 8px 15px;
+    background-color: #2a2a2a; /* Dark background for dropdown items */
+    color: #ffffff; /* White text for readability */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #e50914; /* Red hover color for dropdown items */
+    color: #ffffff;
+}
+
+/* Three-dot Menu Button */
+.menu-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ffffff; /* White color for the dots */
+    font-size: 16px; /* Slightly larger font for visibility */
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    display: none; /* Hidden by default */
+}
+
+/* Show the three-dot button when hovering over the chat window */
+.chat-window-item:hover .menu-button {
+    display: inline-block;
+}
+
+/* Rename Input */
+.rename-input {
+    width: 100%;
+    padding: 5px;
+    font-size: 1em;
+    border-radius: 5px;
+    border: none;
+    background-color: #2a2a2a;
+    color: #ffffff;
+}

@@ -1,0 +1,142 @@
+/* Body and page-level styling */
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: none;
+    overflow: hidden;
+}
+
+/* Animation for the background with slower subtle fade-in and fade-out */
+.background-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Ensure the animation is behind the content */
+    background: linear-gradient(270deg, #e50914, #121212, #1c1c1c); /* Darker shades of grey */
+    background-size: 600% 600%;
+    animation: gradientFade 15s ease-in-out infinite; /* Slower fade in/out effect */
+}
+
+/* Subtle gradient fade animation */
+@keyframes gradientFade {
+    0% {
+        opacity: 0.4;
+        background-position: 0% 50%;
+    }
+    50% {
+        opacity: 1;
+        background-position: 100% 50%;
+    }
+    100% {
+        opacity: 0.4;
+        background-position: 0% 50%;
+    }
+}
+
+/* Signup Container */
+.signup-container {
+    width: 320px;
+    margin: auto;
+    background-color: rgba(18, 18, 18, 0.9); /* Darker grey for form background */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6); /* Slightly darker shadow */
+    font-family: 'Helvetica', sans-serif;
+    color: #ffffff;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    animation: fadeIn 2s ease-in forwards; /* Slower fade-in effect for the form */
+}
+
+/* Slower fade-in animation for the form */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px); /* Slight upward motion */
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0); /* Smooth transition to original position */
+    }
+}
+
+/* Form Styling */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+input {
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 25px;
+    border: 1px solid #666; /* Darker grey for input border */
+    background-color: #1c1c1c; /* Darker grey for input background */
+    color: white;
+    text-align: center;
+    transition: background-color 0.5s ease, box-shadow 0.5s ease, opacity 0.5s ease;
+}
+
+input:focus {
+    background-color: #121212;
+    box-shadow: 0 0 6px #e50914;
+}
+
+/* Signup Button with slower transitions */
+.signup-btn {
+    padding: 12px;
+    background-color: #e50914; /* Red button for signup */
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.5s ease, transform 0.3s ease, opacity 0.5s ease;
+    margin-top: 10px;
+    opacity: 0;
+    animation: fadeIn 2.5s ease-in forwards; /* Button fades in after the form */
+}
+
+.signup-btn:hover {
+    background-color: #d40812; /* Slightly darker red on hover */
+    transform: scale(1.05); /* Slight scaling effect */
+}
+
+/* Error and Success Messages */
+.error-message {
+    color: #ff4444;
+    margin-top: 10px;
+    font-size: 0.9em;
+    opacity: 0;
+    animation: fadeIn 3s ease-in forwards;
+}
+
+.success-message {
+    color: #44ff44;
+    margin-top: 10px;
+    font-size: 0.9em;
+    opacity: 0;
+    animation: fadeIn 3s ease-in forwards;
+}
+
+/* Login link */
+a {
+    color: #e50914;
+    text-decoration: none;
+    transition: color 0.5s ease, opacity 0.5s ease;
+    font-size: 0.9em;
+    opacity: 0;
+    animation: fadeIn 3.2s ease-in forwards; /* Link fades in last */
+}
+
+a:hover {
+    color: #d40812;
+    text-decoration: underline;
+}
