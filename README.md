@@ -51,6 +51,7 @@ Make sure you have the following installed on your machine:
 ### Environment Variables
 
 Create a `.env` file in the `backend` and `frontend` directories with the following variables:
+Note: If you need the required environment variables, please feel free to reach out to me directly.
 
 #### Backend
 ```bash
