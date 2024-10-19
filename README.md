@@ -1,7 +1,7 @@
 
 # Netflix Insights Chatbot
 
-This repository contains a chatbot application designed to provide insights into Netflix engagement trends for the year 2023. The system consists of a Flask backend and a React frontend, utilizing advanced AI models to handle user queries about Netflix titles, technical specifications, and industry figures.
+This repository contains a chatbot application designed to provide insights into Netflix engagement trends for the year 2023. The system consists of a Flask backend and a React frontend, utilizing advanced AI models, RAG pipeline and text-to-sql to handle user queries about Netflix titles, technical specifications, and engagement trends.
 
 ## Table of Contents
 
