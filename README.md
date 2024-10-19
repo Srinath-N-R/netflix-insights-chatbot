@@ -19,8 +19,10 @@ This repository contains a chatbot application designed to provide insights into
 - **Vector Search**: Uses LangChain's TimescaleVector for efficient similarity-based queries.
 - **OAuth2 Authentication**: Supports Google login via OAuth2 for secure user access.
 - **Rate Limiting**: Protects the API with rate limiting for a smoother experience.
-- **SQL-based querying**: Provides insights into Netflix titles based on user queries.
+- **SQL-based querying**: Provides insights into Netflix titles based on user queries through a powerful text-to-SQL pipeline.
+- **AI Agents**: Utilizes intelligent agents to handle technical queries, provide guided prompts, and deliver structured information.
 - **Structured Responses**: Returns related questions to help users explore similar topics.
+
 
 ## Tech Stack
 
