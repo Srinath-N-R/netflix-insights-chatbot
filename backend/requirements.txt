@@ -20,7 +20,7 @@ langchain_openai
 openai
 
 # Authentication and Authorization
-Authlib
+authlib
 
 # Utility Libraries
 python-dotenv

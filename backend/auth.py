@@ -1,102 +1,73 @@
-from flask import Blueprint, request, jsonify, redirect, url_for
+import os
+from flask import Blueprint, request, jsonify, redirect, url_for, session, current_app
 from flask_jwt_extended import create_access_token
-from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy.exc import SQLAlchemyError
-from tables import session, User, ChatWindow
+from tables import session as db_session, User, ChatWindow
+from chat import create_new_chat_window
 import logging
 from sqlalchemy import desc
-from chat import create_new_chat_window
 
 auth_bp = Blueprint('auth', __name__)
-
-
 
 # Enable logging to see what’s happening during the request
 logging.basicConfig(level=logging.INFO)
 
-@auth_bp.route('/register', methods=['POST'])
-def register():
+# Google OAuth Login route
+@auth_bp.route('/login/google')
+def google_login():
+    google = current_app.config['GOOGLE_OAUTH_CLIENT']
+    redirect_uri = url_for('auth.google_callback', _external=True)
+    return google.authorize_redirect(redirect_uri)
+
+# Google OAuth callback route
+@auth_bp.route('/google/callback')
+def google_callback():
     try:
-        # Get the JSON data sent by the frontend
-        data = request.get_json()
-        logging.info(f"Received registration data: {data['email']}")  # Logs incoming request data safely
+        google = current_app.config['GOOGLE_OAUTH_CLIENT']
+        token = google.authorize_access_token()  # Exchange auth code for access token
+        resp = google.get('https://www.googleapis.com/oauth2/v3/userinfo')  # Updated userinfo endpoint
+        user_info = resp.json()
+        email = user_info.get('email')
+        name = user_info.get('name')
 
-        # Extract the user information from the request
-        username = data.get('username')
-        email = data.get('email')
-        password = data.get('password')
+        if not email or not name:
+            logging.error("Email or name not found in user info")
+            return jsonify(msg="Failed to retrieve user information from Google"), 400
 
-        # Check for missing fields
-        if not all([username, email, password]):
-            return jsonify(msg="Missing required fields"), 400
+        # Check if user already exists in the database
+        user = db_session.query(User).filter_by(email=email).first()
 
-        # Check if the user already exists in the database
-        existing_user = session.query(User).filter_by(email=email).first()
-        if existing_user:
-            logging.info(f"User {email} already exists")
-            return jsonify(msg="User already exists"), 400
-
-        # Hash the password before storing it
-        hashed_password = generate_password_hash(password)
-
-        # If the user doesn't exist, create a new user
-        new_user = User(username=username, email=email, password_hash=hashed_password)
-        session.add(new_user)
-        session.commit()
-
-        logging.info(f"User {email} successfully registered")
-        return jsonify(msg="Sign-up successful"), 200
-
-    except SQLAlchemyError as e:
-        session.rollback()  # Rollback in case of error
-        logging.error(f"Database error during registration: {str(e)}")
-        return jsonify(msg="An error occurred during registration"), 500
-
-    except Exception as e:
-        logging.error(f"Error during registration: {str(e)}")
-        return jsonify(msg="An unexpected error occurred"), 500
-
-
-@auth_bp.route('/login', methods=['POST'])
-def login():
-    try:
-        data = request.get_json()
-        email = data.get('email')
-        password = data.get('password')
-
-        if not all([email, password]):
-            return jsonify(msg="Missing email or password"), 400
-
-        logging.info(f"Attempting login for {email}")
-
-        # Find the user by email
-        user = session.query(User).filter_by(email=email).first()
-
-        # Check if the user exists and the password hash matches
-        if user and check_password_hash(user.password_hash, password):
-            # Create a JWT token
-            access_token = create_access_token(identity=email)
-            
-            # Check for existing chat window for the user
-            chat_window = session.query(ChatWindow).filter_by(user_id=user.user_id).order_by(desc(ChatWindow.created_at)).first()
-            if not chat_window:
-                chat_window_id = create_new_chat_window(user.user_id, chat_name="First Chat!")
-            else:
-                chat_window_id = chat_window.chat_window_id
-
-            logging.info(f"User {email} successfully logged in with chat_window_id: {chat_window_id}")
-
-            # Return both access token and chat_window_id
-            return jsonify(access_token=access_token, user_id=user.user_id, chat_window_id=chat_window_id, msg="Login successful", username=user.username), 200
+        if not user:
+            logging.info(f"User {email} not found, creating new user")
+            # Create a new user if not exists
+            user = User(username=name, email=email, password_hash=None) 
+            db_session.add(user)
+            db_session.commit()
+            logging.info(f"Created new user: {email}")
         else:
-            logging.warning(f"Login failed for {email}")
-            return jsonify(msg="Invalid email or password"), 401
+            logging.info(f"Existing user found: {email}")
 
-    except SQLAlchemyError as e:
-        session.rollback()  # Rollback in case of error
-        logging.error(f"Database error during login: {str(e)}")
-        return jsonify(msg="An error occurred during login"), 500
+        # Generate a JWT token
+        access_token = create_access_token(identity=email)
+        logging.info(f"Generated JWT token for user {email}")
+
+        # Check for existing chat window for the user
+        chat_window = db_session.query(ChatWindow).filter_by(user_id=user.user_id).order_by(desc(ChatWindow.created_at)).first()
+        if not chat_window:
+            chat_window_id = create_new_chat_window(user.user_id, chat_name="First Chat!")
+            logging.info(f"Created new chat window for user {email}: {chat_window_id}")
+        else:
+            chat_window_id = chat_window.chat_window_id
+            logging.info(f"Using existing chat window for user {email}: {chat_window_id}")
+
+        # Store user session info
+        session['profile'] = user_info
+        session['token'] = token
+
+        # Redirect to frontend with the JWT token in the query params
+        FRONTEND_URL = os.environ.get('FRONTEND_URL')
+        frontend_redirect_url = f"{FRONTEND_URL}/login?token={access_token}&chat_window_id={chat_window_id}&user_id={user.user_id}"
+        return redirect(frontend_redirect_url)
 
     except Exception as e:
-        logging.error(f"Error during login: {str(e)}")
-        return jsonify(msg="An unexpected error occurred during login"), 500
+        logging.exception(f"Error during Google OAuth callback: {str(e)}")
+        return jsonify(msg="An error occurred during Google login", error=str(e)), 500

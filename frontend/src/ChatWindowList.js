@@ -1,5 +1,3 @@
-// ChatWindowList.js
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './ChatWindowList.css';
@@ -16,29 +14,29 @@ const ChatWindowList = ({ onSelectChat, selectedChatId }) => {
     // Fetch chat windows when the component mounts
     useEffect(() => {
         const fetchChatWindows = async () => {
-            setLoading(true);
+            const token = localStorage.getItem('token');
+            console.log("Token in localStorage:", token);  // Log to see if the token is fetched
+    
+            if (!token) {
+                console.error("Token not found in localStorage");
+                setError("Token is missing. Please log in again.");
+                return;
+            }
+    
             try {
-                const response = await axios.get('http://localhost:5001/api/chat-windows', {
+                const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/chat-windows`, {
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                        Authorization: `Bearer ${token}`,
                     },
-                    params: {
-                        limit: 20,
-                    },
+                    params: { limit: 20 },
                 });
-
-                if (response.data) {
+    
+                if (response && response.data) {
                     setChatWindows(response.data);
                 }
             } catch (error) {
-                setError('Error fetching chat windows');
-                console.error(
-                    'Error fetching chat windows:',
-                    error.response ? error.response.data : error.message
-                );
-                setChatWindows([]);
-            } finally {
-                setLoading(false);
+                console.error("Error fetching chat windows:", error);
+                setError("Error fetching chat windows");
             }
         };
         fetchChatWindows();
@@ -53,7 +51,7 @@ const ChatWindowList = ({ onSelectChat, selectedChatId }) => {
 
         try {
             const response = await axios.post(
-                'http://localhost:5001/api/chat-windows',
+                `${process.env.REACT_APP_BACKEND_URL}/chat-windows`,
                 {
                     name: newChatName,
                 },
@@ -91,7 +89,7 @@ const ChatWindowList = ({ onSelectChat, selectedChatId }) => {
 
         try {
             const response = await axios.put(
-                `http://localhost:5001/api/chat-windows/${chatId}`,
+                `${process.env.REACT_APP_BACKEND_URL}/chat-windows/${chatId}`,
                 {
                     name: renameValue,
                 },
@@ -122,30 +120,36 @@ const ChatWindowList = ({ onSelectChat, selectedChatId }) => {
         }
     };
 
+    const fetchChatWindows = async () => {
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/chat-windows`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            setChatWindows(response.data);
+        } catch (error) {
+            setError('Error fetching chat windows');
+            console.error(
+                'Error fetching chat windows:',
+                error.response ? error.response.data : error.message
+            );
+        }
+    };
+
+
     const deleteChatWindow = async (chatId) => {
         setLoading(true);
 
         try {
-            await axios.delete(`http://localhost:5001/api/chat-windows/${chatId}`, {
+            const response = await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/chat-windows/${chatId}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
             });
 
-            // Remove the deleted chat window from the state
-            const updatedChatWindows = chatWindows.filter((chat) => chat.id !== chatId);
-            setChatWindows(updatedChatWindows);
-
-            // If the deleted chat window was selected
-            if (selectedChatId === chatId) {
-                if (updatedChatWindows.length > 0) {
-                    // Select the next most recent chat window (the first one in the list)
-                    onSelectChat(updatedChatWindows[0].id);
-                } else {
-                    // No chat windows left
-                    onSelectChat(null);
-                }
-            }
+            // Re-fetch the updated chat windows from the server
+            await fetchChatWindows(); // Make sure you have this function fetching the data
         } catch (error) {
             setError('Error deleting chat window');
             console.error(
@@ -207,7 +211,7 @@ const ChatWindowList = ({ onSelectChat, selectedChatId }) => {
                     className="create-chat-button"
                     disabled={loading}
                 >
-                    {loading ? 'Creating...' : 'Create Chat'}
+                    {loading ? 'Creating...' : 'Create'}
                 </button>
             </div>
 

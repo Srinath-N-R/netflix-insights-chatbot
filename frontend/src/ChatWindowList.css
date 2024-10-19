@@ -1,15 +1,12 @@
-/* ChatWindowList.css */
-
-/* ChatWindowList Container */
 .chat-window-list {
-    width: 250px;
-    background-color: #1a1a1a;
+    width: 300px; /* Increased from 250px to 300px */
+    background-color: #413737;
     color: #ffffff;
     overflow-y: auto;
     height: 100vh;
     padding: 10px;
     box-sizing: border-box;
-    border-right: 1px solid #2a2a2a;
+    border-right: 1px solid #332b2b;
 }
 
 /* Create Chat Section */
@@ -22,20 +19,20 @@
 
 .new-chat-input {
     flex: 1;
-    padding: 8px;
-    margin-right: 5px;
-    border-radius: 5px;
+    padding: 15px 17px;
+    margin-right: 10px;
+    border-radius: 15px;
     border: none;
     background-color: #2a2a2a;
     color: #ffffff;
 }
 
 .create-chat-button {
-    padding: 8px 12px;
-    background-color: #e50914;
+    padding: 12px;
+    background-color: #d94b52;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 25px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
@@ -46,7 +43,7 @@
 }
 
 .create-chat-button:hover:enabled {
-    background-color: #d40812;
+    background-color: #d94b52;
 }
 
 /* Chat Window Item */
@@ -54,8 +51,8 @@
     position: relative;
     padding: 10px;
     margin-bottom: 8px;
-    background-color: #2a2a2a;
-    border-radius: 8px;
+    background-color: #332b2b;
+    border-radius: 20px; /* Rounded corners for the chat window item */
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     z-index: 1; /* Ensure stacking context */
@@ -67,12 +64,12 @@
 }
 
 .chat-window-item.active {
-    background-color: #e50914;
+    background-color: #d94b52;
     font-weight: bold;
 }
 
 .chat-window-item:hover {
-    background-color: #d40812;
+    background-color: #d94b52;
     transform: translateX(5px);
 }
 
@@ -80,6 +77,9 @@
 .chat-window-content {
     display: flex;
     align-items: center;
+    padding: 10px; /* Add padding inside the chat window content */
+    margin-bottom: 5px; /* Add margin below each chat window content */
+    border-radius: 20px; /* Keep chat content rounded as well */
 }
 
 /* Loading and Error Styles */
@@ -102,8 +102,8 @@
     position: absolute;
     right: 10px;
     top: 35px;
-    background-color: #1a1a1a;
-    border: 1px solid #2a2a2a;
+    background-color: #332b2b;
+    border: 1px solid #332b2b;
     padding: 5px;
     z-index: 200; /* Higher z-index to appear above other elements */
     white-space: nowrap;
@@ -114,17 +114,20 @@
     display: block;
 }
 
-/* Dropdown Items */
+/* Dropdown Items - Updated for rounded buttons */
 .dropdown-item {
     cursor: pointer;
-    padding: 8px 15px;
-    background-color: #2a2a2a; /* Dark background for dropdown items */
+    padding: 10px 15px; /* Increased padding for better click area */
+    background-color: #6b5f5f; /* Dark background for dropdown items */
     color: #ffffff; /* White text for readability */
     transition: background-color 0.3s ease, color 0.3s ease;
+    border-radius: 15px; /* Make rename and delete buttons rounded */
+    text-align: center;
+    margin: 5px 0; /* Add margin between the items */
 }
 
 .dropdown-item:hover {
-    background-color: #e50914; /* Red hover color for dropdown items */
+    background-color: #d94b52; /* Red hover color for dropdown items */
     color: #ffffff;
 }
 
@@ -153,6 +156,6 @@
     font-size: 1em;
     border-radius: 5px;
     border: none;
-    background-color: #2a2a2a;
+    background-color: #6b5f5f;
     color: #ffffff;
 }

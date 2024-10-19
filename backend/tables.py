@@ -14,7 +14,7 @@ class User(Base):
     user_id = Column(Integer, primary_key=True)
     username = Column(String(50), unique=True, nullable=False)
     email = Column(String(180), unique=True, nullable=False)
-    password_hash = Column(String(255), nullable=False)
+    password_hash = Column(String(128), nullable=True)
     subscription_type = Column(String(50))
     account_creation_date = Column(DateTime, default=func.now())
     last_login = Column(DateTime)

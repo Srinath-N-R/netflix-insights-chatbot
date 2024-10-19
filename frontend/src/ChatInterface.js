@@ -20,7 +20,8 @@ const ChatInterface = () => {
     // Fetch related questions function (moved outside useEffect)
     const fetchRelatedQuestions = async (chatWindowId) => {
         try {
-            const response = await axios.get(`http://localhost:5001/api/chat-windows/${chatWindowId}/related-questions`, {
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/chat-windows/${chatWindowId}/related-questions`, {
+            
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }
@@ -49,7 +50,7 @@ const ChatInterface = () => {
             }
 
             try {
-                const response = await axios.get('http://localhost:5001/api/history', {
+                const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/history`, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     },
@@ -134,7 +135,7 @@ const ChatInterface = () => {
                 return;
             }
 
-            const response = await axios.post('http://localhost:5001/api/chat', {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/chat`, {
                 message: input,
                 chat_window_id: chatWindowId,
                 user_id: userId

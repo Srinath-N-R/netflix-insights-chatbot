@@ -178,27 +178,49 @@ def create_new_chat_window(user_id, chat_name):
 @chat_bp.route('/chat-windows', methods=['GET'])
 @jwt_required()
 def get_chat_windows():
-    user_email = get_jwt_identity()  # Get the email from the JWT
+    # Log start of the function
+    logging.info("Fetching chat windows")
+
+    # Get the email from the JWT
+    user_email = get_jwt_identity()
+    logging.info(f"User email from JWT: {user_email}")
+
+    # Retrieve the user from the database
     user = session.query(User).filter_by(email=user_email).first()
 
+    # If user is not found, log and return an error
     if not user:
+        logging.error(f"User not found for email: {user_email}")
         return jsonify({"error": "User not found"}), 404
 
+    # Log user ID and limit parameter
     limit = request.args.get('limit', default=20, type=int)  # Get the limit parameter from query string
     user_id = user.user_id
+    logging.info(f"User ID: {user_id}, Limit: {limit}")
 
     try:
         # Query the latest chat windows for the user that are not soft deleted
+        logging.info(f"Querying chat windows for user ID: {user_id}")
         chat_windows = session.query(ChatWindow).filter_by(user_id=user_id, deleted=False).order_by(desc(ChatWindow.created_at)).limit(limit).all()
-        
+
+        # Check if chat windows are found
+        if not chat_windows:
+            logging.info(f"No chat windows found for user ID: {user_id}")
+        else:
+            logging.info(f"Found {len(chat_windows)} chat windows for user ID: {user_id}")
+
         # Format the chat windows data to include name, id, and created_at
         chat_window_list = [{'id': chat.chat_window_id, 'name': chat.name, 'created_at': chat.created_at} for chat in chat_windows]
-
+        
+        # Log the response data
+        logging.info(f"Chat windows to return: {chat_window_list}")
+        
         return jsonify(chat_window_list)
+
     except Exception as e:
         logging.error(f"Error fetching chat windows: {str(e)}")
+        logging.error(traceback.format_exc())  # Log the full traceback for debugging
         return jsonify({"error": "Internal Server Error"}), 500
-
 
 
 @chat_bp.route('/chat-windows', methods=['POST'])
@@ -281,7 +303,22 @@ def delete_chat_window(chat_window_id):
         chat_window.deleted = True
         session.commit()
 
-        return jsonify({"message": "Chat window soft deleted successfully"}), 200
+        # After deleting, check if the user has any remaining active chat windows
+        remaining_chat_windows = session.query(ChatWindow).filter_by(user_id=chat_window.user_id, deleted=False).all()
+
+        # If no active chat windows remain, create a new default chat window
+        if len(remaining_chat_windows) == 0:
+            new_chat_window = ChatWindow(user_id=chat_window.user_id, name="First Chat!")
+            session.add(new_chat_window)
+            session.commit()
+
+            return jsonify({
+                "message": "Chat window soft deleted successfully and a new chat window created",
+                "new_chat_window_id": new_chat_window.chat_window_id,
+                "new_chat_window_name": new_chat_window.name
+            }), 200
+        else:
+            return jsonify({"message": "Chat window soft deleted successfully"}), 200
 
     except SQLAlchemyError as e:
         session.rollback()

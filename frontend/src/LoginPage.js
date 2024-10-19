@@ -1,75 +1,66 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './LoginPage.css'; // Import the CSS for LoginPage
 
 const LoginPage = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const navigate = useNavigate();
-
+    const location = useLocation();
     const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5001/api';
 
-    const handleLogin = async (event) => {
-        event.preventDefault();
-        try {
-            const response = await axios.post(`${backendUrl}/login`, { email, password });
-            if (response && response.data) {
-                setSuccess('Login successful');
-                setError('');
-                localStorage.setItem('token', response.data.access_token);
-                localStorage.setItem('user_id', response.data.user_id);  // Store user_id
-                localStorage.setItem('chat_window_id', response.data.chat_window_id);  // Store chat_window_id
-                setIsLoggedIn(true);
-            } else {
-                setError('Unexpected response from the server.');
-                setSuccess('');
-            }
-        } catch (error) {
-            if (error.response && error.response.data) {
-                setError(error.response.data.msg || 'Login failed');
-            } else {
-                setError('An error occurred. Please try again.');
-            }
-            setSuccess('');
-        }
+    // Handle Google Login Redirect
+    const handleGoogleLogin = async () => {
+        window.location.href = `${backendUrl}/login/google`;  // Redirect to Google OAuth login
     };
-    
 
+    // Handle extracting the token from URL params after Google OAuth login
     useEffect(() => {
-        if (isLoggedIn) {
-            navigate('/chat');  // Redirect to the chat interface
+        const queryParams = new URLSearchParams(location.search);
+        const token = queryParams.get('token');
+        const chatWindowId = queryParams.get('chat_window_id');
+        const userId = queryParams.get('user_id');
+    
+        // Store in localStorage if all parameters exist
+        if (token && chatWindowId && userId) {
+            localStorage.setItem('token', token);
+            localStorage.setItem('chat_window_id', chatWindowId);
+            localStorage.setItem('user_id', userId);
+
+            // After storing token and IDs, redirect to chat page
+            navigate('/chat');
+        } else {
+            console.log("Missing parameters, token, chat_window_id, or user_id not found in URL.");
         }
-    }, [isLoggedIn, navigate]);
+    }, [location.search, navigate]);
+
+    // Typing animation effect
+    useEffect(() => {
+        const text = "Ask me about Netflix Titles, 2023!";
+        let index = 0;
+        const typingElement = document.querySelector('.typing-text');
+        const type = () => {
+            if (index < text.length) {
+                typingElement.innerHTML += text.charAt(index);
+                index++;
+                setTimeout(type, 100); // Adjust typing speed here
+            }
+        };
+        type();
+    }, []);
 
     return (
         <div className="login-page">
             <div className="background-animation"></div> {/* Animated Background */}
             <div className="login-container">
-                <form onSubmit={handleLogin}>
-                    <h2>Login</h2>
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                    {error && <p className="error-message">{error}</p>}
-                    {success && <p className="success-message">{success}</p>}
-                    <button type="submit" className="login-btn">Login</button>
-                    <p>Don't have an account? <Link to="/signup">Sign Up</Link></p>
-                </form>
+                <div className="typing-container">
+                    <h1 className="typing-text"></h1> {/* Typing animation here */}
+                </div>
+                <div className="login-content">
+                    {/* Google Login Button */}
+                    <button className="google-login-btn" onClick={handleGoogleLogin}>
+                        <img src="/images/google-logo.png" alt="Google Logo" />
+                        Login with Google
+                    </button>
+                </div>
             </div>
         </div>
     );
