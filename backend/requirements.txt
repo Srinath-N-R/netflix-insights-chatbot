@@ -1,0 +1,28 @@
+# Web Framework and Extensions
+Flask
+Flask-CORS
+Flask-Dance
+Flask-JWT-Extended
+Flask-Limiter
+Flask-OAuthlib
+gunicorn
+requests-oauthlib
+# Database and Vector Stores
+faiss-cpu
+psycopg2-binary
+timescale-vector
+
+# AI and Language Processing
+langchain
+langchain_community
+langchain_core
+langchain_openai
+openai
+
+# Authentication and Authorization
+authlib
+
+# Utility Libraries
+python-dotenv
+
+# Sort all packages alphabetically within their groups

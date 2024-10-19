@@ -1,0 +1,105 @@
+/* Body and page-level styling */
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: none;
+    overflow: hidden;
+}
+
+/* Animation for the background with slower red-to-grey-to-red transition */
+.background-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Ensure the animation is behind the content */
+    background: linear-gradient(270deg, #d94b52, #1c1c1c, #d94b52); /* Red to grey and back to red */
+    background-size: 600% 600%;
+    animation: gradientFade 15s ease-in-out infinite; /* Slower fade in/out effect */
+}
+
+/* Subtle gradient fade animation */
+@keyframes gradientFade {
+    0% {
+        opacity: 0.4;
+        background-position: 0% 50%;
+    }
+    50% {
+        opacity: 1;
+        background-position: 100% 50%;
+    }
+    100% {
+        opacity: 0.4;
+        background-position: 0% 50%;
+    }
+}
+
+/* Login Container */
+.login-container {
+    width: 320px;
+    margin: auto;
+    background-color: rgba(18, 18, 18, 0.9); /* Darker grey for form background */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6); /* Slightly darker shadow */
+    font-family: 'Helvetica', sans-serif;
+    color: #ffffff;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    animation: fadeIn 2s ease-in forwards; /* Slower fade-in effect for the form */
+}
+
+/* Slower fade-in animation for the form */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px); /* Slight upward motion */
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0); /* Smooth transition to original position */
+    }
+}
+
+/* Google Login Button Styling */
+.google-login-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 20px;
+    background-color: #ffffff; /* White background for the Google button */
+    color: #757575; /* Gray text color to match Google’s style */
+    border: 1px solid #ddd; /* Light border */
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 15px;
+    width: 100%; /* Make the button take up full width of the container */
+    max-width: 320px; /* Limit the button's width */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+}
+
+.google-login-btn:hover {
+    background-color: #f7f7f7; /* Slight background change on hover */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Darker shadow on hover */
+}
+
+.google-login-btn img {
+    width: 20px; /* Size for the Google logo */
+    margin-right: 10px; /* Space between logo and text */
+}
+
+.google-login-btn:focus {
+    outline: none;
+    box-shadow: 0 0 5px #d94b52; /* Highlight effect on focus */
+    background-color: #f7f7f7;
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Interface</title>
+    
+    <!-- Link to the CSS file -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <div class="chat-interface">
+        <!-- Logo in the header -->
+        <div class="chat-header">
+            <div className="chat-header">
+                <div className="logo-container">
+                    <img src="/images/logo.png" alt="Logo" className="logo" />
+                </div>
+                Ask me about Netflix user engagement trends for 2023
+            </div>
+            Netflix Chat Interface
+        </div>
+
+        <!-- Message List -->
+        <div class="message-list">
+            <div class="message user-message">
+                <img src="img/user-icon.png" alt="User Icon" class="message-icon"> Hello!
+            </div>
+            <div class="message bot-message">
+                <img src="img/bot-icon.png" alt="Bot Icon" class="message-icon"> Hi there! How can I help you today?
+            </div>
+        </div>
+
+        <!-- Input Section -->
+        <div class="message-input-container">
+            <input type="text" class="message-input" placeholder="Type a message...">
+            <button class="send-button">Send</button>
+        </div>
+
+        <!-- Quick Replies -->
+        <div class="quick-replies">
+            <button class="quick-reply-button">Option 1</button>
+            <button class="quick-reply-button">Option 2</button>
+            <button class="quick-reply-button">Option 3</button>
+        </div>
+
+        <!-- Logout Button -->
+        <button class="logout-btn">Logout</button>
+    </div>
+
+</body>
+</html>
