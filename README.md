@@ -15,8 +15,8 @@ This repository contains a chatbot application designed to provide insights into
 
 ## Features
 
-- **GPT-4 powered Chat Interface**: The chatbot leverages GPT-4 models for natural conversation and data exploration.
-- **Vector Search**: Uses LangChain's TimescaleVector for efficient similarity-based queries.
+- **GPT-4o powered Chat Interface**: The chatbot leverages GPT-4o model for natural conversation.
+- **Vector Search**: Uses FAISS for efficient similarity-based queries.
 - **OAuth2 Authentication**: Supports Google login via OAuth2 for secure user access.
 - **Rate Limiting**: Protects the API with rate limiting for a smoother experience.
 - **SQL-based querying**: Provides insights into Netflix titles based on user queries through a powerful text-to-SQL pipeline.
@@ -28,7 +28,7 @@ This repository contains a chatbot application designed to provide insights into
 
 ### Backend:
 - Python (Flask)
-- LangChain (TimescaleVector, ChatOpenAI)
+- LangChain
 - PostgreSQL (TimescaleDB for vector storage)
 - JWT-based Authentication
 - OAuth2 with Google
